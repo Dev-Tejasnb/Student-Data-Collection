@@ -14,8 +14,8 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
     doc = SimpleDocTemplate(
         buffer,
         pagesize=landscape(A4),
-        rightMargin=0.5*inch,
-        leftMargin=0.5*inch,
+        rightMargin=0.4*inch,
+        leftMargin=0.4*inch,
         topMargin=0.5*inch,
         bottomMargin=0.5*inch
     )
@@ -46,9 +46,35 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
     elements.append(Paragraph(f"Total Records: {len(students)}", subtitle_style))
     elements.append(Spacer(1, 12))
     
-    table_data = [
-        ["Sl No", "Name", "Course", "College", "Admission Through", "Submitted Date"]
-    ]
+    # Use Paragraphs for table cells so long column headings (especially
+    # "Admission Through") wrap instead of overflowing into adjacent columns.
+    table_header_style = ParagraphStyle(
+        'TableHeader',
+        parent=styles['Normal'],
+        fontName='Helvetica-Bold',
+        fontSize=9,
+        leading=10,
+        textColor=colors.whitesmoke,
+        alignment=TA_CENTER,
+    )
+    table_cell_style = ParagraphStyle(
+        'TableCell',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=8.5,
+        leading=10,
+        textColor=colors.black,
+        alignment=TA_CENTER,
+    )
+
+    table_data = [[
+        Paragraph("Sl No", table_header_style),
+        Paragraph("Name", table_header_style),
+        Paragraph("Course", table_header_style),
+        Paragraph("College", table_header_style),
+        Paragraph("Admission<br/>Through", table_header_style),
+        Paragraph("Submitted<br/>Date", table_header_style),
+    ]]
     
     for idx, student in enumerate(students, 1):
         created_at = student.get("created_at")
@@ -58,17 +84,19 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
             date_str = str(created_at) if created_at else ""
         
         table_data.append([
-            str(idx),
-            student.get("name", ""),
-            student.get("course", ""),
-            student.get("college", ""),
-            student.get("admission_through", ""),
-            date_str
+            Paragraph(str(idx), table_cell_style),
+            Paragraph(str(student.get("name", "")), table_cell_style),
+            Paragraph(str(student.get("course", "")), table_cell_style),
+            Paragraph(str(student.get("college", "")), table_cell_style),
+            Paragraph(str(student.get("admission_through", "")), table_cell_style),
+            Paragraph(date_str, table_cell_style),
         ])
     
-    col_widths = [0.5*inch, 1.5*inch, 1.5*inch, 2.5*inch, 1.2*inch, 1.3*inch]
+    # Landscape A4 usable width is about 10.7 inches with these margins.
+    # These widths give Admission Through and Submitted Date enough room.
+    col_widths = [0.55*inch, 1.65*inch, 1.25*inch, 2.45*inch, 1.65*inch, 1.55*inch]
     
-    table = Table(table_data, colWidths=col_widths, repeatRows=1)
+    table = Table(table_data, colWidths=col_widths, repeatRows=1, hAlign='CENTER')
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
