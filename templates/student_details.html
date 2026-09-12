@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="details-page">
+    <header class="details-header">
+        <div class="header-content">
+            <a href="/dashboard" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                </svg>
+                Back to Dashboard
+            </a>
+            <div class="header-actions">
+                <button type="button" id="editBtn" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Edit
+                </button>
+                <button type="button" id="deleteBtn" class="btn btn-danger">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Delete
+                </button>
+                <button type="button" id="pdfBtn" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="details-content">
+        <div class="details-card">
+            <div class="student-header">
+                <div class="student-avatar">
+                    <span id="studentInitial"></span>
+                </div>
+                <div class="student-info">
+                    <h1 id="studentName">Loading...</h1>
+                    <div class="student-meta">
+                        <span class="badge" id="studentAdmissionThrough"></span>
+                        <span class="student-id">ID: <span id="studentId"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label>Course</label>
+                    <p id="studentCourse">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>College</label>
+                    <p id="studentCollege">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>Admission Through</label>
+                    <p id="studentAdmissionThroughDetail">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>Submitted Date</label>
+                    <p id="studentCreatedAt">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <p id="studentUpdatedAt">-</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal" id="deleteConfirmModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-confirm">
+        <div class="modal-header">
+            <h3>Confirm Deletion</h3>
+        </div>
+        <div class="modal-body">
+            <svg class="modal-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <p>Are you sure you want to delete this student record?</p>
+            <p class="modal-detail"><strong id="deleteConfirmName"></strong></p>
+            <p class="modal-warning">This action cannot be undone.</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelDeleteConfirmBtn">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteConfirmBtn">
+                <span class="btn-text">Delete</span>
+                <span class="btn-loading" style="display: none;"><span class="spinner"></span> Deleting...</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/student-details.js"></script>
+{% endblock %}

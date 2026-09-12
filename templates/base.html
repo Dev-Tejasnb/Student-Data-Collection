@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}College Student Management System{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}{% endblock %}
+    {% block footer %}
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="footer-copyright">&copy; 2026 Student Data Collection System</p>
+            <p class="footer-credit">Designed & Developed by <span class="footer-author">Tejas N B</span></p>
+        </div>
+    </footer>
+    {% endblock %}
+    <script src="/static/js/auth.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

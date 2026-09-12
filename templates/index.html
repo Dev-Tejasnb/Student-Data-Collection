@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Student Registration{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <header class="public-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>College Student Management</h1>
+                    <p>Student Registration Portal</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Student Registration</h2>
+                    <p class="subtitle">Please enter your details below</p>
+                </div>
+
+                <!-- Batch Notice -->
+                <div class="batch-notice">
+                    <svg class="batch-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4"/>
+                        <path d="M12 8h.01"/>
+                    </svg>
+                    <span class="batch-notice-text">Only Batch 3 students have to fill the form.</span>
+                </div>
+
+                <form id="studentForm" class="student-form" novalidate>
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Enter your full name"
+                            required
+                            maxlength="100"
+                        >
+                        <span class="error-message" id="nameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course">Course <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="course" 
+                            name="course" 
+                            placeholder="e.g., BCA, B.Tech, MBA"
+                            required
+                            maxlength="100"
+                        >
+                        <span class="error-message" id="courseError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="college">College <span class="required">*</span></label>
+                        <input 
+                            type="text" 
+                            id="college" 
+                            name="college" 
+                            placeholder="Enter college name"
+                            required
+                            maxlength="200"
+                        >
+                        <span class="error-message" id="collegeError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admission_through">Admission Through <span class="required">*</span></label>
+                        <select id="admission_through" name="admission_through" required>
+                            <option value="">Select admission method</option>
+                            <option value="KCET">KCET</option>
+                            <option value="NEET">NEET</option>
+                            <option value="NUCAT">NUCAT</option>
+                            <option value="MANAGEMENT">MANAGEMENT</option>
+                        </select>
+                        <span class="error-message" id="admissionError"></span>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-submit">
+                        <span class="btn-text">Submit Details</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span> Submitting...
+                        </span>
+                    </button>
+                </form>
+
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <h3>Success!</h3>
+                    <p>Your details have been submitted successfully.</p>
+                    <button type="button" id="submitAnotherBtn" class="btn btn-secondary">Submit Another</button>
+                </div>
+
+                <div id="errorMessage" class="error-alert" style="display: none;">
+                    <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4"/>
+                        <path d="M12 8h.01"/>
+                    </svg>
+                    <h4>Information</h4>
+                    <p>This form is for student data collection only. Your information will be stored securely in our college database.</p>
+                </div>
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/>
+                        <path d="M8 21h8"/>
+                        <path d="M12 17v4"/>
+                    </svg>
+                    <h4>Secure</h4>
+                    <p>All data is encrypted and protected. Only authorized college staff can access submitted records.</p>
+                </div>
+                <div class="info-card">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <h4>Privacy</h4>
+                    <p>Your personal information is handled according to college privacy policies and data protection regulations.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Batch Alert Popup Modal -->
+<div class="modal" id="batchAlertModal" role="dialog" aria-labelledby="batchAlertTitle" aria-modal="true">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-confirm" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3 id="batchAlertTitle">Alert</h3>
+        </div>
+        <div class="modal-body">
+            <svg class="modal-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <p>Only 2 PUC 2024-26 Batch 3 students have to fill the form.</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-primary" id="batchAlertOkBtn">OK</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/index.js"></script>
+{% endblock %}

@@ -1,0 +1,447 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <header class="dashboard-header">
+        <div class="header-left">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>College Student Management</h1>
+                    <span class="subtitle">Administration Dashboard</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <span id="userRole" class="role-badge"></span>
+                <span id="userName" class="username"></span>
+            </div>
+            <button type="button" id="logoutBtn" class="btn btn-secondary btn-logout">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li>
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-page="students">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Students
+                    </a>
+                </li>
+                <li id="usersNavItem" style="display: none;">
+                    <a href="#" class="nav-link" data-page="users">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        User Management
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="mainContent">
+            <div class="page" id="dashboardPage">
+                <div class="page-header">
+                    <h2>Dashboard Overview</h2>
+                    <p>Welcome back! Here's a summary of student registrations.</p>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statTotal">0</span>
+                            <span class="stat-label">Total Students</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon kcet">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statKCET">0</span>
+                            <span class="stat-label">KCET</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon neet">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statNEET">0</span>
+                            <span class="stat-label">NEET</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon nucat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statNUCAT">0</span>
+                            <span class="stat-label">NUCAT</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon management">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statManagement">0</span>
+                            <span class="stat-label">MANAGEMENT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button type="button" id="refreshBtn" class="btn btn-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"/>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                        </svg>
+                        Refresh Statistics
+                    </button>
+                    <button type="button" id="exportAllPdfBtn" class="btn btn-secondary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Export All Students (PDF)
+                    </button>
+                </div>
+            </div>
+
+            <div class="page" id="studentsPage" style="display: none;">
+                <div class="page-header">
+                    <h2>Student Records</h2>
+                    <p>Manage and view all student submissions</p>
+                </div>
+
+                <div class="toolbar">
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Search by name, course, or college...">
+                        </div>
+                        <select id="filterSelect" class="filter-select">
+                            <option value="">All Admission Methods</option>
+                            <option value="KCET">KCET</option>
+                            <option value="NEET">NEET</option>
+                            <option value="NUCAT">NUCAT</option>
+                            <option value="MANAGEMENT">MANAGEMENT</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button type="button" id="refreshStudentsBtn" class="btn btn-secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"/>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                            </svg>
+                            Refresh
+                        </button>
+                        <button type="button" id="exportFilteredPdfBtn" class="btn btn-secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>College</th>
+                                <th>Admission Through</th>
+                                <th>Submitted Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <button type="button" class="btn btn-secondary btn-page" id="prevPage" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Previous
+                    </button>
+                    <div class="page-info">
+                        <span id="pageInfo">Page 1 of 1</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-page" id="nextPage" disabled>
+                        Next
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <h3>No students found</h3>
+                    <p>No student records match your current search and filter criteria.</p>
+                </div>
+            </div>
+
+            <div class="page" id="usersPage" style="display: none;">
+                <div class="page-header">
+                    <div class="header-content">
+                        <div>
+                            <h2>User Management</h2>
+                            <p>Manage admin and staff accounts</p>
+                        </div>
+                        <button type="button" id="addUserBtn" class="btn btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </div>
+
+    <div class="overlay" id="sidebarOverlay"></div>
+</div>
+
+<div class="modal" id="editModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Student</h3>
+            <button type="button" class="modal-close" id="closeEditModal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <form id="editForm" class="modal-form" novalidate>
+            <input type="hidden" id="editStudentId">
+            <div class="form-group">
+                <label for="editName">Full Name <span class="required">*</span></label>
+                <input type="text" id="editName" name="name" required maxlength="100">
+                <span class="error-message" id="editNameError"></span>
+            </div>
+            <div class="form-group">
+                <label for="editCourse">Course <span class="required">*</span></label>
+                <input type="text" id="editCourse" name="course" required maxlength="100">
+                <span class="error-message" id="editCourseError"></span>
+            </div>
+            <div class="form-group">
+                <label for="editCollege">College <span class="required">*</span></label>
+                <input type="text" id="editCollege" name="college" required maxlength="200">
+                <span class="error-message" id="editCollegeError"></span>
+            </div>
+            <div class="form-group">
+                <label for="editAdmissionThrough">Admission Through <span class="required">*</span></label>
+                <select id="editAdmissionThrough" name="admission_through" required>
+                    <option value="KCET">KCET</option>
+                    <option value="NEET">NEET</option>
+                    <option value="NUCAT">NUCAT</option>
+                    <option value="MANAGEMENT">MANAGEMENT</option>
+                </select>
+                <span class="error-message" id="editAdmissionError"></span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="saveEditBtn">
+                    <span class="btn-text">Save Changes</span>
+                    <span class="btn-loading" style="display: none;"><span class="spinner"></span> Saving...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="deleteModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-confirm">
+        <div class="modal-header">
+            <h3>Confirm Deletion</h3>
+        </div>
+        <div class="modal-body">
+            <svg class="modal-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <p>Are you sure you want to delete this student record?</p>
+            <p class="modal-detail"><strong id="deleteStudentName"></strong></p>
+            <p class="modal-warning">This action cannot be undone.</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                <span class="btn-text">Delete</span>
+                <span class="btn-loading" style="display: none;"><span class="spinner"></span> Deleting...</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="userModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="userModalTitle">Add User</h3>
+            <button type="button" class="modal-close" id="closeUserModal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <form id="userForm" class="modal-form" novalidate>
+            <input type="hidden" id="userId">
+            <div class="form-group">
+                <label for="userUsername">Username <span class="required">*</span></label>
+                <input type="text" id="userUsername" name="username" required minlength="3" maxlength="50">
+                <span class="error-message" id="userUsernameError"></span>
+            </div>
+            <div class="form-group">
+                <label for="userPassword">Password <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input type="password" id="userPassword" name="password" required minlength="6" maxlength="100">
+                    <button type="button" class="toggle-password" id="toggleUserPassword">
+                        <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+                <span class="error-message" id="userPasswordError"></span>
+                <small class="form-hint" id="passwordHint">Minimum 6 characters</small>
+            </div>
+            <div class="form-group">
+                <label for="userRole">Role <span class="required">*</span></label>
+                <select id="userRole" name="role" required>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group" id="userActiveGroup" style="display: none;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="userActive" name="is_active" checked>
+                    <span class="checkmark"></span>
+                    Active
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelUserBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="saveUserBtn">
+                    <span class="btn-text">Save</span>
+                    <span class="btn-loading" style="display: none;"><span class="spinner"></span> Saving...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
