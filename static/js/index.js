@@ -1,20 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('studentForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoading = submitBtn.querySelector('.btn-loading');
-    const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorText');
-    const submitAnotherBtn = document.getElementById('submitAnotherBtn');
-
-    const fields = {
-        name: { input: document.getElementById('name'), error: document.getElementById('nameError') },
-        course: { input: document.getElementById('course'), error: document.getElementById('courseError') },
-        college: { input: document.getElementById('college'), error: document.getElementById('collegeError') },
-        admission_through: { input: document.getElementById('admission_through'), error: document.getElementById('admissionError') }
-    };
-
     // Batch Alert Modal
     const batchAlertModal = document.getElementById('batchAlertModal');
     const batchAlertOkBtn = document.getElementById('batchAlertOkBtn');
@@ -172,10 +156,22 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify(data)
         });
 
-        const result = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+        let result = {};
+
+        if (contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            const text = await response.text();
+            result = { message: text };
+        }
 
         if (!response.ok) {
-            throw new Error(result.message || 'Failed to submit student details');
+            throw new Error(
+                result.message ||
+                result.detail ||
+                'Failed to submit student details'
+            );
         }
 
         return result;
