@@ -97,3 +97,9 @@ async def health_check():
     database = await get_database()
     await database.command("ping")
     return {"status": "healthy", "database": "connected"}
+
+@app.head("/health", include_in_schema=False)
+async def health_check():
+    database = await get_database()
+    await database.command("ping")
+    return {"status": "healthy", "database": "connected"}
