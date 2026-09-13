@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Optional, Annotated
+from typing import Optional, Annotated, Literal
 from pydantic import BaseModel, Field, ConfigDict, BeforeValidator
 from bson import ObjectId
 
@@ -22,9 +22,13 @@ PyObjectId = Annotated[
     Field(alias="_id")
 ]
 
+# Valid batch values - must match exactly these strings
+BATCH_VALUES = Literal["FTB", "Batch - 1", "Batch - 2", "Batch - 3"]
+
 
 class StudentBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
+    batch: BATCH_VALUES = Field(..., description="Student batch")
     course: str = Field(..., min_length=1, max_length=100)
     college: str = Field(..., min_length=1, max_length=200)
     admission_through: str = Field(..., pattern="^(KCET|NEET|NUCAT|MANAGEMENT)$")
@@ -36,6 +40,7 @@ class StudentCreate(StudentBase):
 
 class StudentUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
+    batch: Optional[BATCH_VALUES] = None
     course: Optional[str] = Field(None, min_length=1, max_length=100)
     college: Optional[str] = Field(None, min_length=1, max_length=200)
     admission_through: Optional[str] = Field(None, pattern="^(KCET|NEET|NUCAT|MANAGEMENT)$")

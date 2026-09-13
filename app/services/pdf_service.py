@@ -9,7 +9,7 @@ from typing import List, Dict, Any
 import io
 
 
-def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
+def generate_all_students_pdf(students: List[Dict[str, Any]], title_suffix: str = "") -> bytes:
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -19,7 +19,7 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
         topMargin=0.5*inch,
         bottomMargin=0.5*inch
     )
-    
+
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
         'CustomTitle',
@@ -29,7 +29,7 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
         alignment=TA_CENTER,
         textColor=colors.HexColor('#1e3a5f')
     )
-    
+
     subtitle_style = ParagraphStyle(
         'CustomSubtitle',
         parent=styles['Normal'],
@@ -38,14 +38,18 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
         alignment=TA_CENTER,
         textColor=colors.HexColor('#4a5568')
     )
-    
+
     elements = []
-    
-    elements.append(Paragraph("College Student Records", title_style))
+
+    # Dynamic title
+    title = "College Student Records"
+    if title_suffix:
+        title += f" - {title_suffix}"
+    elements.append(Paragraph(title, title_style))
     elements.append(Paragraph(f"Generated on: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", subtitle_style))
     elements.append(Paragraph(f"Total Records: {len(students)}", subtitle_style))
     elements.append(Spacer(1, 12))
-    
+
     # Use Paragraphs for table cells so long column headings (especially
     # "Admission Through") wrap instead of overflowing into adjacent columns.
     table_header_style = ParagraphStyle(
@@ -70,34 +74,36 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
     table_data = [[
         Paragraph("Sl No", table_header_style),
         Paragraph("Name", table_header_style),
+        Paragraph("Batch", table_header_style),
         Paragraph("Course", table_header_style),
         Paragraph("College", table_header_style),
         Paragraph("Admission<br/>Through", table_header_style),
         Paragraph("Submitted<br/>Date", table_header_style),
     ]]
-    
+
     for idx, student in enumerate(students, 1):
         created_at = student.get("created_at")
         if isinstance(created_at, datetime):
             date_str = created_at.strftime("%Y-%m-%d %H:%M")
         else:
             date_str = str(created_at) if created_at else ""
-        
+
         table_data.append([
             Paragraph(str(idx), table_cell_style),
             Paragraph(str(student.get("name", "")), table_cell_style),
+            Paragraph(str(student.get("batch", "")), table_cell_style),
             Paragraph(str(student.get("course", "")), table_cell_style),
             Paragraph(str(student.get("college", "")), table_cell_style),
             Paragraph(str(student.get("admission_through", "")), table_cell_style),
             Paragraph(date_str, table_cell_style),
         ])
-    
+
     # Landscape A4 usable width is about 10.7 inches with these margins.
     # These widths give Admission Through and Submitted Date enough room.
-    col_widths = [0.55*inch, 1.65*inch, 1.25*inch, 2.45*inch, 1.65*inch, 1.55*inch]
-    
+    col_widths = [0.5*inch, 1.5*inch, 1.0*inch, 1.2*inch, 2.2*inch, 1.35*inch, 1.4*inch]
+
     table = Table(table_data, colWidths=col_widths, repeatRows=1, hAlign='CENTER')
-    
+
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -116,9 +122,9 @@ def generate_all_students_pdf(students: List[Dict[str, Any]]) -> bytes:
         ('TOPPADDING', (0, 1), (-1, -1), 6),
         ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
     ]))
-    
+
     elements.append(table)
-    
+
     doc.build(elements)
     buffer.seek(0)
     return buffer.read()
@@ -134,7 +140,7 @@ def generate_student_pdf(student: Dict[str, Any]) -> bytes:
         topMargin=1*inch,
         bottomMargin=1*inch
     )
-    
+
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
         'CustomTitle',
@@ -144,7 +150,7 @@ def generate_student_pdf(student: Dict[str, Any]) -> bytes:
         alignment=TA_CENTER,
         textColor=colors.HexColor('#1e3a5f')
     )
-    
+
     subtitle_style = ParagraphStyle(
         'CustomSubtitle',
         parent=styles['Normal'],
@@ -153,7 +159,7 @@ def generate_student_pdf(student: Dict[str, Any]) -> bytes:
         alignment=TA_CENTER,
         textColor=colors.HexColor('#4a5568')
     )
-    
+
     label_style = ParagraphStyle(
         'Label',
         parent=styles['Normal'],
@@ -161,51 +167,52 @@ def generate_student_pdf(student: Dict[str, Any]) -> bytes:
         textColor=colors.HexColor('#2d3748'),
         fontName='Helvetica-Bold'
     )
-    
+
     value_style = ParagraphStyle(
         'Value',
         parent=styles['Normal'],
         fontSize=11,
         textColor=colors.HexColor('#4a5568')
     )
-    
+
     elements = []
-    
+
     elements.append(Paragraph("College Student Record", title_style))
     elements.append(Paragraph(f"Generated on: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", subtitle_style))
     elements.append(Spacer(1, 20))
-    
+
     student_id = student.get("id", student.get("_id", ""))
-    
+
     fields = [
         ("Student ID", str(student_id)),
         ("Name", student.get("name", "")),
+        ("Batch", student.get("batch", "")),
         ("Course", student.get("course", "")),
         ("College", student.get("college", "")),
         ("Admission Through", student.get("admission_through", "")),
     ]
-    
+
     created_at = student.get("created_at")
     if isinstance(created_at, datetime):
         fields.append(("Submitted Date", created_at.strftime("%Y-%m-%d %H:%M:%S")))
     else:
         fields.append(("Submitted Date", str(created_at) if created_at else ""))
-    
+
     updated_at = student.get("updated_at")
     if isinstance(updated_at, datetime):
         fields.append(("Last Updated", updated_at.strftime("%Y-%m-%d %H:%M:%S")))
     else:
         fields.append(("Last Updated", str(updated_at) if updated_at else ""))
-    
+
     table_data = []
     for label, value in fields:
         table_data.append([
             Paragraph(label, label_style),
             Paragraph(value, value_style)
         ])
-    
+
     table = Table(table_data, colWidths=[2.2*inch, 4*inch])
-    
+
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#edf2f7')),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
@@ -221,9 +228,9 @@ def generate_student_pdf(student: Dict[str, Any]) -> bytes:
         ('RIGHTPADDING', (0, 0), (-1, -1), 12),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
-    
+
     elements.append(table)
-    
+
     doc.build(elements)
     buffer.seek(0)
     return buffer.read()

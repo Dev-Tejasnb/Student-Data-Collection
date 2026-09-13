@@ -234,6 +234,10 @@ svg {
 .badge-neet { background: #f0fff4; color: #2f855a; }
 .badge-nucat { background: #fffaf0; color: #d69e2e; }
 .badge-management { background: #faf5ff; color: #6b46c1; }
+.badge-ftb { background: #e0f2fe; color: #0369a1; }
+.badge-batch-1 { background: #fef3c7; color: #92400e; }
+.badge-batch-2 { background: #fce7f3; color: #9d174d; }
+.badge-batch-3 { background: #e0e7ff; color: #3730a3; }
 
 .checkbox-label {
     display: flex;
@@ -1010,6 +1014,10 @@ svg {
 .stat-icon.neet { background: linear-gradient(135deg, #38a169, #2f855a); }
 .stat-icon.nucat { background: linear-gradient(135deg, #d69e2e, #b7791f); }
 .stat-icon.management { background: linear-gradient(135deg, #805ad5, #6b46c1); }
+.stat-icon.ftb { background: linear-gradient(135deg, #3182ce, #2b6cb0); }
+.stat-icon.batch-1 { background: linear-gradient(135deg, #d69e2e, #b7791f); }
+.stat-icon.batch-2 { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+.stat-icon.batch-3 { background: linear-gradient(135deg, #6b46c1, #553c9a); }
 
 .stat-icon svg {
     width: 24px;

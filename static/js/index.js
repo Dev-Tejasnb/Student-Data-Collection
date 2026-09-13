@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fields = {
         name: { input: document.getElementById('name'), error: document.getElementById('nameError') },
+        batch: { input: document.getElementById('batch'), error: document.getElementById('batchError') },
         course: { input: document.getElementById('course'), error: document.getElementById('courseError') },
         college: { input: document.getElementById('college'), error: document.getElementById('collegeError') },
         admission_through: { input: document.getElementById('admission_through'), error: document.getElementById('admissionError') }
@@ -114,6 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         } else if (name.length > 100) {
             showError('name', 'Name must be less than 100 characters');
+            isValid = false;
+        }
+
+        const batch = fields.batch.input.value;
+        if (!batch) {
+            showError('batch', 'Please select a batch');
+            isValid = false;
+        } else if (!['FTB', 'Batch - 1', 'Batch - 2', 'Batch - 3'].includes(batch)) {
+            showError('batch', 'Invalid batch selection');
             isValid = false;
         }
 
@@ -189,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = {
             name: fields.name.input.value.trim(),
+            batch: fields.batch.input.value,
             course: fields.course.input.value.trim(),
             college: fields.college.input.value.trim(),
             admission_through: fields.admission_through.input.value

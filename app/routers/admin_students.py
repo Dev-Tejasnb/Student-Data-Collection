@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Query, Depends
 from typing import Optional, List
 from app.database import get_database
-from app.models.student import StudentResponse, StudentUpdate, StudentListResponse, StudentInDB
+from app.models.student import StudentResponse, StudentUpdate, StudentListResponse, StudentInDB, BATCH_VALUES
 from app.schemas.response import SuccessResponse
 from app.dependencies import require_staff_or_admin, require_admin
 from bson import ObjectId
@@ -12,6 +12,7 @@ import math
 router = APIRouter(prefix="/api/admin/students", tags=["Admin Students"])
 
 
+BATCH_VALUES_LIST = ["FTB", "Batch - 1", "Batch - 2", "Batch - 3"]
 ADMISSION_METHODS = ["KCET", "NEET", "NUCAT", "MANAGEMENT"]
 
 
@@ -26,6 +27,7 @@ async def list_students(
     limit: int = Query(20, ge=1, le=100, description="Items per page"),
     search: Optional[str] = Query(None, description="Search by name, course, or college"),
     admission_through: Optional[str] = Query(None, description="Filter by admission method"),
+    batch: Optional[str] = Query(None, description="Filter by batch"),
     sort_by: str = Query("created_at", description="Sort field"),
     sort_order: int = Query(-1, description="Sort order: 1 for ascending, -1 for descending"),
     current_user = Depends(require_staff_or_admin)
@@ -43,6 +45,9 @@ async def list_students(
     
     if admission_through and admission_through in ADMISSION_METHODS:
         query["admission_through"] = admission_through
+    
+    if batch and batch in BATCH_VALUES_LIST:
+        query["batch"] = batch
     
     total = await database.students.count_documents(query)
     pages = math.ceil(total / limit) if total > 0 else 1
@@ -89,12 +94,26 @@ async def get_student_stats(current_user = Depends(require_staff_or_admin)):
     async for doc in cursor:
         admission_stats[doc["_id"]] = doc["count"]
     
+    batch_pipeline = [
+        {"$group": {"_id": "$batch", "count": {"$sum": 1}}}
+    ]
+    
+    batch_stats = {}
+    cursor = await database.students.aggregate(batch_pipeline)
+    async for doc in cursor:
+        if doc["_id"]:
+            batch_stats[doc["_id"]] = doc["count"]
+    
     stats = {
         "total": total,
         "kcet": admission_stats.get("KCET", 0),
         "neet": admission_stats.get("NEET", 0),
         "nucat": admission_stats.get("NUCAT", 0),
-        "management": admission_stats.get("MANAGEMENT", 0)
+        "management": admission_stats.get("MANAGEMENT", 0),
+        "ftb": batch_stats.get("FTB", 0),
+        "batch_1": batch_stats.get("Batch - 1", 0),
+        "batch_2": batch_stats.get("Batch - 2", 0),
+        "batch_3": batch_stats.get("Batch - 3", 0)
     }
     
     return SuccessResponse(
@@ -176,6 +195,12 @@ async def update_student(
             detail=f"Invalid admission method. Must be one of: {', '.join(ADMISSION_METHODS)}"
         )
     
+    if "batch" in update_dict and update_dict["batch"] not in BATCH_VALUES_LIST:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Invalid batch. Must be one of: {', '.join(BATCH_VALUES_LIST)}"
+        )
+    
     update_dict["updated_at"] = datetime.now(timezone.utc)
     
     await database.students.update_one(
@@ -186,7 +211,7 @@ async def update_student(
     updated_student = await database.students.find_one({"_id": ObjectId(student_id)})
     updated_student["id"] = str(updated_student["_id"])
     del updated_student["_id"]
-
+    
     return SuccessResponse(
         message="Student updated successfully",
         data=StudentResponse(**updated_student)

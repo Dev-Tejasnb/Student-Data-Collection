@@ -9,12 +9,14 @@ from datetime import timedelta
 def test_student_create_valid():
     student = StudentCreate(
         name="John Doe",
+        batch="Batch - 3",
         course="BCA",
         college="Test College",
         admission_through="KCET"
     )
     assert student.name == "John Doe"
     assert student.admission_through == "KCET"
+    assert student.batch == "Batch - 3"
 
 
 def test_student_create_invalid_admission():

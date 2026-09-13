@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let studentsLimit = 20;
     let currentSearch = '';
     let currentFilter = '';
+    let currentBatchFilter = '';
     let currentSortBy = 'created_at';
     let currentSortOrder = -1;
     let deleteStudentId = null;
@@ -117,6 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('statNEET').textContent = data.data.neet;
                 document.getElementById('statNUCAT').textContent = data.data.nucat;
                 document.getElementById('statManagement').textContent = data.data.management;
+                document.getElementById('statFTB').textContent = data.data.ftb;
+                document.getElementById('statBatch1').textContent = data.data.batch_1;
+                document.getElementById('statBatch2').textContent = data.data.batch_2;
+                document.getElementById('statBatch3').textContent = data.data.batch_3;
             }
         } catch (error) {
             showToast('Failed to load statistics', 'error');
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const table = document.getElementById('studentsTable');
         const pagination = document.getElementById('pagination');
 
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Loading...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">Loading...</td></tr>';
         emptyState.style.display = 'none';
         table.style.display = 'table';
         pagination.style.display = 'flex';
@@ -143,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (currentSearch) params.append('search', currentSearch);
             if (currentFilter) params.append('admission_through', currentFilter);
+            if (currentBatchFilter) params.append('batch', currentBatchFilter);
 
             const response = await auth.fetchWithAuth(`/api/admin/students?${params}`);
             const data = await response.json();
@@ -180,6 +186,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = students.map((student, index) => {
             const admissionClass = `badge-${student.admission_through.toLowerCase()}`;
+            let batchClass = '';
+            if (student.batch === 'FTB') batchClass = 'badge-ftb';
+            else if (student.batch === 'Batch - 1') batchClass = 'badge-batch-1';
+            else if (student.batch === 'Batch - 2') batchClass = 'badge-batch-2';
+            else if (student.batch === 'Batch - 3') batchClass = 'badge-batch-3';
             const createdAt = new Date(student.created_at).toLocaleDateString('en-US', {
                 year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
@@ -187,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr>
                     <td>${(studentsPage - 1) * studentsLimit + index + 1}</td>
                     <td>${escapeHtml(student.name)}</td>
+                    <td><span class="badge ${batchClass}">${escapeHtml(student.batch)}</span></td>
                     <td>${escapeHtml(student.course)}</td>
                     <td>${escapeHtml(student.college)}</td>
                     <td><span class="badge ${admissionClass}">${student.admission_through}</span></td>
@@ -268,10 +280,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loadStudents();
     });
 
-    document.getElementById('exportAllPdfBtn').addEventListener('click', () => exportPdf());
-    document.getElementById('exportFilteredPdfBtn').addEventListener('click', () => exportPdf(currentSearch, currentFilter));
+    document.getElementById('batchFilterSelect').addEventListener('change', (e) => {
+        currentBatchFilter = e.target.value;
+        studentsPage = 1;
+        loadStudents();
+    });
 
-    function exportPdf(search = null, filter = null) {
+    document.getElementById('exportAllPdfBtn').addEventListener('click', () => exportPdf());
+    document.getElementById('exportFilteredPdfBtn').addEventListener('click', () => exportPdf(currentSearch, currentFilter, currentBatchFilter));
+
+    function exportPdf(search = null, filter = null, batch = null) {
         const btn = search ? document.getElementById('exportFilteredPdfBtn') : document.getElementById('exportAllPdfBtn');
         const originalText = btn.innerHTML;
         btn.innerHTML = '<span class="spinner"></span> Generating...';
@@ -280,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
         if (filter) params.append('admission_through', filter);
+        if (batch) params.append('batch', batch);
 
         auth.fetchWithAuth(`/api/admin/students/export/pdf?${params}`)
             .then(response => {
@@ -342,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const student = data.data;
                     document.getElementById('editStudentId').value = student.id;
                     document.getElementById('editName').value = student.name;
+                    document.getElementById('editBatch').value = student.batch;
                     document.getElementById('editCourse').value = student.course;
                     document.getElementById('editCollege').value = student.college;
                     document.getElementById('editAdmissionThrough').value = student.admission_through;
@@ -362,10 +382,10 @@ document.addEventListener('DOMContentLoaded', () => {
     editModal.querySelector('.modal-overlay').addEventListener('click', closeEditModalHandler);
 
     function clearEditErrors() {
-        ['editNameError', 'editCourseError', 'editCollegeError', 'editAdmissionError'].forEach(id => {
+        ['editNameError', 'editBatchError', 'editCourseError', 'editCollegeError', 'editAdmissionError'].forEach(id => {
             document.getElementById(id).textContent = '';
         });
-        ['editName', 'editCourse', 'editCollege', 'editAdmissionThrough'].forEach(id => {
+        ['editName', 'editBatch', 'editCourse', 'editCollege', 'editAdmissionThrough'].forEach(id => {
             document.getElementById(id).classList.remove('input-error');
         });
     }
@@ -383,6 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = {
             name: document.getElementById('editName').value.trim(),
+            batch: document.getElementById('editBatch').value,
             course: document.getElementById('editCourse').value.trim(),
             college: document.getElementById('editCollege').value.trim(),
             admission_through: document.getElementById('editAdmissionThrough').value
@@ -390,6 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let isValid = true;
         if (!data.name) { showEditError('editNameError', 'Name is required'); isValid = false; }
+        if (!data.batch) { showEditError('editBatchError', 'Batch is required'); isValid = false; }
+        if (!['FTB', 'Batch - 1', 'Batch - 2', 'Batch - 3'].includes(data.batch)) { showEditError('editBatchError', 'Invalid batch selection'); isValid = false; }
         if (!data.course) { showEditError('editCourseError', 'Course is required'); isValid = false; }
         if (!data.college) { showEditError('editCollegeError', 'College is required'); isValid = false; }
         if (!['KCET', 'NEET', 'NUCAT', 'MANAGEMENT'].includes(data.admission_through)) {

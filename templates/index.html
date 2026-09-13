@@ -36,7 +36,7 @@
                         <path d="M12 16v-4"/>
                         <path d="M12 8h.01"/>
                     </svg>
-                    <span class="batch-notice-text">Only Batch 3 students have to fill the form.</span>
+                    <span class="batch-notice-text">All students are required to fill in their details. Please select your correct batch.</span>
                 </div>
 
                 <form id="studentForm" class="student-form" novalidate>
@@ -51,6 +51,18 @@
                             maxlength="100"
                         >
                         <span class="error-message" id="nameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="batch">Batch <span class="required">*</span></label>
+                        <select id="batch" name="batch" required>
+                            <option value="">Select your batch</option>
+                            <option value="FTB">FTB</option>
+                            <option value="Batch - 1">Batch - 1</option>
+                            <option value="Batch - 2">Batch - 2</option>
+                            <option value="Batch - 3">Batch - 3</option>
+                        </select>
+                        <span class="error-message" id="batchError"></span>
                     </div>
 
                     <div class="form-group">
@@ -163,7 +175,7 @@
                 <line x1="12" y1="9" x2="12" y2="13"/>
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            <p>Only 2 PUC 2024-26 Batch 3 students have to fill the form.</p>
+            <p>All students are required to fill in their details. Please select your correct batch.</p>
         </div>
         <div class="modal-actions">
             <button type="button" class="btn btn-primary" id="batchAlertOkBtn">OK</button>

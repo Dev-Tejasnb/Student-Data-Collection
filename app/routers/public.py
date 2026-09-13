@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Body
 from typing import List
 from app.database import get_database
-from app.models.student import StudentCreate, StudentResponse, StudentInDB
+from app.models.student import StudentCreate, StudentResponse, StudentInDB, BATCH_VALUES
 from app.schemas.response import SuccessResponse, ErrorResponse
 from bson import ObjectId
 from datetime import datetime, timezone
@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 router = APIRouter(prefix="/api/students", tags=["Public Students"])
 
 
+BATCH_VALUES_LIST = ["FTB", "Batch - 1", "Batch - 2", "Batch - 3"]
 ADMISSION_METHODS = ["KCET", "NEET", "NUCAT", "MANAGEMENT"]
 
 
@@ -25,6 +26,12 @@ async def create_student(student_data: StudentCreate = Body(...)):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid admission method. Must be one of: {', '.join(ADMISSION_METHODS)}"
+        )
+
+    if student_data.batch not in BATCH_VALUES_LIST:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Invalid batch. Must be one of: {', '.join(BATCH_VALUES_LIST)}"
         )
 
     database = await get_database()
