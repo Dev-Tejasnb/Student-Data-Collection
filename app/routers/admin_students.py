@@ -29,7 +29,7 @@ async def list_students(
     admission_through: Optional[str] = Query(None, description="Filter by admission method"),
     batch: Optional[str] = Query(None, description="Filter by batch"),
     sort_by: str = Query("created_at", description="Sort field"),
-    sort_order: int = Query(-1, description="Sort order: 1 for ascending, -1 for descending"),
+    sort_order: int = Query(1, description="Sort order: 1 for ascending, -1 for descending"),
     current_user = Depends(require_staff_or_admin)
 ):
     database = await get_database()

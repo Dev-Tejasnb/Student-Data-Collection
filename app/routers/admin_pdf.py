@@ -45,7 +45,7 @@ async def export_all_students_pdf(
         query["batch"] = batch
 
     students = []
-    async for student_doc in database.students.find(query).sort("created_at", -1):
+    async for student_doc in database.students.find(query).sort("created_at", 1):
         student_doc["id"] = str(student_doc["_id"])
         del student_doc["_id"]
         students.append(student_doc)
