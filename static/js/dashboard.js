@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentPage = 'dashboard';
     let studentsPage = 1;
-    let studentsLimit = 20;
+    let studentsLimit = 50;
     let currentSearch = '';
     let currentFilter = '';
     let currentBatchFilter = '';
     let currentSortBy = 'created_at';
-    let currentSortOrder = -1;
+    let currentSortOrder = 1;
     let deleteStudentId = null;
     let editStudentId = null;
     let userToEdit = null;

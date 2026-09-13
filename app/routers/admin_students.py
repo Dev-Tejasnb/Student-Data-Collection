@@ -24,7 +24,7 @@ ADMISSION_METHODS = ["KCET", "NEET", "NUCAT", "MANAGEMENT"]
 )
 async def list_students(
     page: int = Query(1, ge=1, description="Page number"),
-    limit: int = Query(20, ge=1, le=100, description="Items per page"),
+    limit: int = Query(50, ge=1, le=100, description="Items per page"),
     search: Optional[str] = Query(None, description="Search by name, course, or college"),
     admission_through: Optional[str] = Query(None, description="Filter by admission method"),
     batch: Optional[str] = Query(None, description="Filter by batch"),
